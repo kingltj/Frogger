@@ -1,3 +1,4 @@
+
 const grid = document.querySelector('.grid');
 const squares = createDivs();
 const timeLeftDisplay = document.getElementById('time-left');
@@ -8,6 +9,7 @@ let frogPosition = 76;
 const gridWidth = 9;
 
 startPauseButton.addEventListener('click', startPause);
+
 
 function startPause(){
     document.addEventListener('keyup', moveFrog);
@@ -29,7 +31,7 @@ function createDivs(){
             div.classList.add('car-right');
         else if(i == 76){
             div.classList.add('starting-block');
-            //div.classList.add('frog');
+            div.classList.add('frog');
         }
     
         grid.appendChild(div);
@@ -40,28 +42,34 @@ function createDivs(){
 }
 
 function moveFrog(e){
+    squares[frogPosition].classList.remove('frog');
 
     switch (e.key) {
         case 'ArrowLeft':
-            if(frogPosition % gridWidth !== 0) frogPosition--;
+            if(frogPosition % gridWidth !== 0)
+                frogPosition--;
             
             break;
         case 'ArrowRight':
-            if(frogPosition % gridWidth < gridWidth -1) frogPosition++;
+            if(frogPosition % gridWidth < gridWidth -1)
+                frogPosition++;
             
             break;
             
         case 'ArrowUp':
-            frogPosition -= gridWidth;
+            if(frogPosition - gridWidth >= 0)
+                frogPosition -= gridWidth;
             break;
             
         case 'ArrowDown':
-            frogPosition += gridWidth;
+            if(frogPosition + gridWidth < gridWidth * gridWidth)
+                frogPosition += gridWidth;
             
             break;
     
         default:
             break;
     }
+
     squares[frogPosition].classList.add('frog');
 }
