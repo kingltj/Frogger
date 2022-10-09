@@ -10,7 +10,6 @@ const gridWidth = 9;
 
 startPauseButton.addEventListener('click', startPause);
 
-
 function startPause(){
     document.addEventListener('keyup', moveFrog);
 }
