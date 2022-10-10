@@ -10,12 +10,29 @@ const startPauseButton = document.getElementById('start-pause-button');
 
 let frogPosition = 76;
 const gridWidth = 9;
+let timerID;
+let outComeTimerID;
+let currentTime = 20;
+let gameOver = false;
 
 startPauseButton.addEventListener('click', startPause);
 
 function startPause(){
-    setInterval(autoMoveElements, 1000);
-    document.addEventListener('keyup', moveFrog);
+    if(!timerID){
+        if(!gameOver){
+            timerID = setInterval(autoMoveElements, 1000);
+            outComeTimerID = setInterval(checkOutcome, 50);
+            document.addEventListener('keyup', moveFrog);
+        }
+    }
+    else{
+        clearInterval(timerID);
+        clearInterval(outComeTimerID);
+        timerID = null;
+        outComeTimerID = null;
+        document.removeEventListener('keyup', moveFrog);
+    }
+
 }
 
 function createDivs(){
@@ -83,6 +100,9 @@ function moveFrog(e){
 }
 
 function autoMoveElements(){
+    currentTime--;
+    timeLeftDisplay.textContent = currentTime;
+
     logLefts.forEach( (ll) => { moveElement(ll, "log-left", 5);});
     logRights.forEach( (lr) => { moveElement(lr, "log-right", 5);});
     carLefts.forEach( (cl) => { moveElement(cl, "car-left", 3);});
@@ -113,4 +133,32 @@ function moveElement(div, element, max){
           }
         }
     }
+}
+
+function winLose() {
+    const win = "ending-block";
+    const winLoseArr = [[win, 'c1', 'l4', 'l5'], ["You Win", "You Lose"], ["king", "dead"]];
+
+    if(currentTime <= 0){ wl(1); }
+ 
+    for (let i = 0, b = 1 ; i < winLoseArr.length; i++){
+        if(squares[frogPosition].classList.contains(winLoseArr[0][i])){
+            if(i == 0) b = 0;
+            wl(b)
+            break;
+        }
+    };
+
+    function wl(b){
+        resultDisplay.textContent = winLoseArr[1][b];
+        clearInterval(timerID);
+        squares[frogPosition].classList.add(winLoseArr[2][b]);
+   
+        document.removeEventListener('keyup', moveFrog);
+        gameOver = true;
+    }
+}
+
+function checkOutcome(){
+    winLose();
 }
